@@ -19,10 +19,11 @@
     <student>
         <name>
             <!-- Insert your full name on the line below. -->
-            
+            Chloe Wu
         </name>
         <studentid>
             <!-- Insert your student ID number below. -->
+            9085885326
         </studentid>
     </student>
 
@@ -30,36 +31,37 @@
     <!-- BEGIN PROBLEM 1 -->
     <answer number="1a">
         <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
-
-
+            %sql SELECT A.i, A.j, A.val + B.val AS val FROM A JOIN B ON A.i = B.i AND A.j = B.j;
 
         ]]><!-- End problem 1, part (a). -->
     </answer>
     <answer number="1b">
         <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
-
-
+            %sql SELECT SUM(A.val * B.val) AS DotProduct FROM A JOIN B ON A.i = B.i WHERE A.j = 0 and B.j = 1;
 
         ]]><!-- End problem 1, part (b). -->
     </answer>
     <answer number="1c">
         <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
-
-
+            %sql SELECT A.i AS i, B.j AS j, SUM(A.val * B.val) AS val FROM A JOIN B ON A.j = B.i GROUP BY A.i, B.j;
 
         ]]><!-- End problem 1, part (c). -->
     </answer>
     <answer number="1d">
         <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
-
-
+            %%sql
+            SELECT CASE WHEN EXISTS (SELECT 1 FROM A AS x JOIN A AS y ON x.i = y.j AND x.j = y.i WHERE x.val != y.val)
+            THEN 'FALSE' ELSE 'TRUE' END AS IsSymmetric;
 
         ]]><!-- End problem 1, part (d). -->
     </answer>
     <answer number="1e">
         <!-- Paste your solution to problem 1, part (e) below this line. --><![CDATA[
-
-
+            %%sql
+            WITH AB AS (SELECT A.i AS i, B.j AS j, SUM(A.val * B.val) AS val FROM A JOIN B ON A.j = B.i GROUP BY A.i, B.j),
+            BA AS (SELECT B.i AS i, A.j AS j, SUM(B.val * A.val) AS val FROM B JOIN A ON B.j = A.i GROUP BY B.i, A.j)
+            SELECT CASE WHEN EXISTS (SELECT 1 FROM AB JOIN BA ON AB.i = BA.i AND AB.j = BA.j WHERE AB.val != BA.val)
+            THEN 'FALSE' ELSE 'TRUE' END AS IsCommutative;
 
         ]]><!-- End problem 1, part (e). -->
     </answer>
@@ -69,22 +71,47 @@
     <!-- BEGIN PROBLEM 2 -->
     <answer number="2a">
         <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
-
-
+            %%sql
+            WITH HolidaySales AS (SELECT s.Store AS Store, SUM(s.WeeklySales) AS TotalSales
+                    FROM Sales AS s
+                    JOIN Holidays AS h ON s.WeekDate = h.Weekdate
+                    WHERE h.IsHoliday = 'TRUE'
+                    GROUP BY s.Store)
+            SELECT Store, ROUND(TotalSales, 2) AS AllSales
+            FROM HolidaySales
+            WHERE TotalSales = (SELECT MAX(TotalSales) FROM HolidaySales);
 
         ]]><!-- End problem 2, part (a). -->
     </answer>
     <answer number="2b">
         <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
-
+            %%sql
+            WITH WeeklySales AS (SELECT s.WeekDate, SUM(s.WeeklySales) AS TotalSales 
+                    FROM Sales AS s GROUP BY s.WeekDate),
+            HolidayAverage AS (SELECT AVG(w.TotalSales) AS AvgHolidaySales 
+                    FROM WeeklySales AS w JOIN Holidays AS h ON h.WeekDate = w.WeekDate
+                    WHERE h.IsHoliday = 'TRUE')
+            SELECT COUNT(*) AS NumberNonHolidays
+            FROM WeeklySales AS w 
+            JOIN HolidayAverage AS h ON 1=1
+            JOIN Holidays AS d ON w.WeekDate = d.WeekDate
+            WHERE w.TotalSales > h.AvgHolidaySales and d.IsHoliday = 'FALSE';
 
 
         ]]><!-- End problem 2, part (b). -->
     </answer>
     <answer number="2c">
         <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
-
-
+            %%sql
+            WITH SeasonWeeklySales AS (SELECT t.Type, s.WeeklySales, substr(s.WeekDate, 6, 2) AS Month
+                        FROM Sales AS s JOIN Stores AS t ON s.Store = t.Store)
+            SELECT Type, 
+            ROUND(AVG(CASE WHEN Month IN ('12', '01', '02') THEN WeeklySales END), 2) AS Winter,
+            ROUND(AVG(CASE WHEN Month IN ('03', '04', '05') THEN WeeklySales END), 2) AS Spring,
+            ROUND(AVG(CASE WHEN Month IN ('06', '07', '08') THEN WeeklySales END), 2) AS Summer,
+            ROUND(AVG(CASE WHEN Month IN ('09', '10', '11') THEN WeeklySales END), 2) AS Fall
+            FROM SeasonWeeklySales
+            GROUP BY Type;
 
         ]]><!-- End problem 2, part (c). -->
     </answer>
