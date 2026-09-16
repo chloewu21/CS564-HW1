@@ -133,22 +133,38 @@
     </answer>
     <answer number="3b">
         <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
-
-
+            SELECT s.A AS Company, s.B AS ConnectsTo
+            FROM streets AS s
+            GROUP BY s.A
+            HAVING COUNT(DISTINCT s.id) = 1
+            ORDER BY Company;
 
         ]]><!-- End problem 3, part (b). -->
     </answer>
     <answer number="3c">
         <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+            DROP VIEW IF EXISTS Within2Hops;
+            CREATE VIEW Within2Hops AS
+            SELECT s.B AS company, s.d AS distance
+            FROM streets AS s
+            WHERE s.A = 'UW-Madison'
+            UNION
+            SELECT s2.B AS company, s1.d + s2.d AS distance
+            FROM streets AS s1, streets AS s2
+            WHERE s1.A = 'UW-Madison' AND s2.A = s1.B AND s1.id != s2.id AND s2.B != 'UW-Madison';  
 
-
+            SELECT r1.company AS company_1, r2.company AS company_2, r1.distance + r2.distance AS distance
+            FROM Within2Hops AS r1, Within2Hops AS r2
+            WHERE r1.company > r2.company AND r1.distance + r2.distance <= 15
 
         ]]><!-- End problem 3, part (c). -->
     </answer>
     <answer number="3d">
         <!-- Paste your solution to problem 3, part (d) below this line. --><![CDATA[
-
-
+            SELECT MAX(s1.d + s2.d + s3.d) AS LongestDistance
+            FROM streets AS s1, streets AS s2, streets AS s3
+            WHERE s1.B = s2.A AND s2.B = s3.A AND s1.A = s3.B
+            AND s1.A != s2.A AND s2.A != s3.A AND s1.A != s3.A;
 
         ]]><!-- End problem 3, part (d). -->
     </answer>
