@@ -31,25 +31,24 @@
     <!-- BEGIN PROBLEM 1 -->
     <answer number="1a">
         <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
-            %sql SELECT A.i, A.j, A.val + B.val AS val FROM A JOIN B ON A.i = B.i AND A.j = B.j;
+            SELECT A.i, A.j, A.val + B.val AS val FROM A JOIN B ON A.i = B.i AND A.j = B.j;
 
         ]]><!-- End problem 1, part (a). -->
     </answer>
     <answer number="1b">
         <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
-            %sql SELECT SUM(A.val * B.val) AS DotProduct FROM A JOIN B ON A.i = B.i WHERE A.j = 0 and B.j = 1;
+            SELECT SUM(A.val * B.val) AS DotProduct FROM A JOIN B ON A.i = B.i WHERE A.j = 0 and B.j = 1;
 
         ]]><!-- End problem 1, part (b). -->
     </answer>
     <answer number="1c">
         <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
-            %sql SELECT A.i AS i, B.j AS j, SUM(A.val * B.val) AS val FROM A JOIN B ON A.j = B.i GROUP BY A.i, B.j;
+            SELECT A.i AS i, B.j AS j, SUM(A.val * B.val) AS val FROM A JOIN B ON A.j = B.i GROUP BY A.i, B.j;
 
         ]]><!-- End problem 1, part (c). -->
     </answer>
     <answer number="1d">
         <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
-            %%sql
             SELECT CASE WHEN EXISTS (SELECT 1 FROM A AS x JOIN A AS y ON x.i = y.j AND x.j = y.i WHERE x.val != y.val)
             THEN 'FALSE' ELSE 'TRUE' END AS IsSymmetric;
 
@@ -57,7 +56,6 @@
     </answer>
     <answer number="1e">
         <!-- Paste your solution to problem 1, part (e) below this line. --><![CDATA[
-            %%sql
             WITH AB AS (SELECT A.i AS i, B.j AS j, SUM(A.val * B.val) AS val FROM A JOIN B ON A.j = B.i GROUP BY A.i, B.j),
             BA AS (SELECT B.i AS i, A.j AS j, SUM(B.val * A.val) AS val FROM B JOIN A ON B.j = A.i GROUP BY B.i, A.j)
             SELECT CASE WHEN EXISTS (SELECT 1 FROM AB JOIN BA ON AB.i = BA.i AND AB.j = BA.j WHERE AB.val != BA.val)
@@ -71,7 +69,6 @@
     <!-- BEGIN PROBLEM 2 -->
     <answer number="2a">
         <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
-            %%sql
             WITH HolidaySales AS (SELECT s.Store AS Store, SUM(s.WeeklySales) AS TotalSales
                     FROM Sales AS s
                     JOIN Holidays AS h ON s.WeekDate = h.Weekdate
@@ -85,7 +82,6 @@
     </answer>
     <answer number="2b">
         <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
-            %%sql
             WITH WeeklySales AS (SELECT s.WeekDate, SUM(s.WeeklySales) AS TotalSales 
                     FROM Sales AS s GROUP BY s.WeekDate),
             HolidayAverage AS (SELECT AVG(w.TotalSales) AS AvgHolidaySales 
@@ -102,7 +98,6 @@
     </answer>
     <answer number="2c">
         <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
-            %%sql
             WITH SeasonWeeklySales AS (SELECT t.Type, s.WeeklySales, substr(s.WeekDate, 6, 2) AS Month
                         FROM Sales AS s JOIN Stores AS t ON s.Store = t.Store)
             SELECT Type, 
