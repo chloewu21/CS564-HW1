@@ -116,8 +116,18 @@
     <!-- BEGIN PROBLEM 3 -->
     <answer number="3a">
         <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
-
-
+            SELECT s.B AS company, s.d AS distance
+            FROM streets AS s
+            WHERE s.A = 'UW-Madison' AND s.d <= 10
+            UNION
+            SELECT s2.B AS company, s1.d + s2.d AS distance 
+            FROM streets AS s1, streets AS s2
+            WHERE s1.A = 'UW-Madison' AND s2.A = s1.B AND s1.d + s2.d <= 10 AND s1.id != s2.id AND s2.B != 'UW-Madison'
+            UNION
+            SELECT s3.B AS company, s1.d + s2.d + s3.d AS distance
+            FROM streets AS s1, streets AS s2, streets AS s3
+            WHERE s1.A = 'UW-Madison' AND s2.A = s1.B AND s3.A = s2.B AND s1.d + s2.d + s3.d <= 10
+            AND s1.id != s2.id AND s2.id != s3.id AND s3.B != 'UW-Madison';
 
         ]]><!-- End problem 3, part (a). -->
     </answer>
